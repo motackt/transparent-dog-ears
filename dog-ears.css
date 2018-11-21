@@ -1,0 +1,61 @@
+/*change background to a linear gradient with the dog-ear part already cut off*/
+/*note that 0.707 = sin(45deg), to find the kinda perfect distance for the gradient*/
+.post {
+	z-index: 0;
+	background: linear-gradient(225deg, transparent 0%, transparent calc((60px/0.707)/2), white calc((60px/0.707)/2), white 100%);
+	/*make sure moving parts don't leave the post itself*/
+	position: relative;
+	overflow: hidden;
+}
+
+/*set up dog-ear as a square with a linear gradient so it looks like a triangle*/
+.post .dog-ear {
+	position: absolute;
+	z-index: unset;
+	background: linear-gradient(45deg, gray 50%, transparent 50%);
+	border-bottom-left-radius: 5px;
+	width: 0px;
+	height: 0px;
+	top: 0;
+	right: 0;
+}
+
+/*when hovering over post, tell permalink to grow*/
+.post:hover .dog-ear {
+	width: 60px;
+	height: 60px;
+}
+
+/*this is the part under the permalink that always covers up the part of the post wrapper that is transparent (ie cut off*/
+.post .dog-ear:before {
+	content: "";
+	position: absolute;
+	z-index: -1;
+	background: linear-gradient(45deg, white 50%, transparent 50%);
+	width: 120px;
+	height: 120px;
+	top: -60px;
+	right: -60px;
+}
+
+/*when hovering over post, tell this part to shrink*/
+.post:hover .dog-ear:before {
+	width: 60px;
+	height: 60px;
+	top: 0px;
+	right: 0px;
+}
+
+/*when hovering over post, adjust this part so under-part doesn't peak over permalink dog-ear*/
+.post:hover .dog-ear:before {
+	top: 1px;
+	right: 1px;
+}
+
+/*make sure transitions for both are exactly the same so everything lines up*/
+.post .dog-ear, 
+.post:hover .dog-ear, 
+.post .dog-ear:before, 
+.post:hover .dog-ear:before {
+	transition: transform 0.15s ease-in, width 0.15s ease-in, height 0.15s ease-in, top 0.15s ease-in, right 0.15s ease-in;
+}
