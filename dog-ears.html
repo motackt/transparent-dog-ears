@@ -1,7 +1,20 @@
-<div style="display: flex; background:linear-gradient(90deg, purple, pink); padding:10px; border-radius: 10px; width:300px; height: 400px;">
-  <article class="post" style="width:250px; height: 350px; padding:10px; border-radius: 10px; margin:auto;">
-    <h1>Hello world!</h1>
-    <p>I think dogs should vote!</p>
+<div style="display: flex; background:linear-gradient(90deg, purple, pink); padding:10px; border-radius: 10px; width:900px; height: 400px;">
+  <article class="post one" style="width:250px; height: 350px; padding:10px; border-radius: 10px; margin:auto;">
+    <h1>Hidden Overflow</h1>
+    <p>This method is probably the simplest, but doesn't allow for inner elements (like the purple button) to leave the post.</p>
     <div class="dog-ear"></div>
+    <div class="button"></div>
+  </article>
+  <article class="post two" style="width:250px; height: 350px; padding:10px; border-radius: 10px; margin:auto;">
+    <h1>Background-Clip</h1>
+    <p>This method allows elements to leave the post, useful for menus or other effects.<br>However it has the unfortunate issue of not being able to round the top-right corner.</p>
+    <div class="dog-ear"></div>
+    <div class="button"></div>
+  </article>
+  <article class="post three" style="width:250px; height: 350px; padding:10px; border-radius: 10px; margin:auto;">
+    <h1>Clip-Path</h1>
+    <p>This method has the advantages of allowing elements to leave the post, while also maintaining a rounded corner!<br>However, it doesn't have great browser support at the time of making these methods.</p>
+    <div class="dog-ear"></div>
+    <div class="button"></div>
   </article>
 </div>
