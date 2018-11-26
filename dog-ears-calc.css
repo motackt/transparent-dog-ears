@@ -1,4 +1,4 @@
-/*set up assets*/
+/*PREAMBLE*/
 :root {
 	--post: white;
 	--dog-ear: gray;
@@ -6,14 +6,25 @@
 	--de-time: 0.15s;
 }
 
-/*change background to a linear gradient with the dog-ear part already cut off*/
-/*note that 0.707 = sin(45deg), to find the kinda perfect distance for the gradient*/
+* {
+  font-family: sans-serif;
+}
+
+.button {
+  position: absolute;
+  background-color: rebeccapurple;
+  width: 30px;
+  height: 30px;
+  top: -10px;
+  left: -10px;
+  border-radius: 50%;
+}
+
+/*DOG-EARS CSS*/
 .post {
-	z-index: 0;
-	background: linear-gradient(225deg, transparent 0%, transparent calc((var(--de-width)/0.707)/2), var(--post) calc((var(--de-width)/0.707)/2), var(--post) 100%);
-	/*make sure moving parts don't leave the post itself*/
 	position: relative;
-	overflow: hidden;
+	z-index: 0;
+	background: linear-gradient(225deg, transparent 0%, transparent calc((var(--de-width) / 0.707) / 2), var(--post) calc((var(--de-width) / 0.707) / 2), var(--post) 100%);
 }
 
 /*set up dog-ear as a square with a linear gradient so it looks like a triangle*/
@@ -21,49 +32,125 @@
 	position: absolute;
 	z-index: unset;
 	background: linear-gradient(45deg, var(--dog-ear) 50%, transparent 50%);
-	border-bottom-left-radius: 5px;
-	width: 0px;
-	height: 0px;
+	border-bottom-left-radius: 10px;
+	width: 0;
+	height: 0;
 	top: 0;
 	right: 0;
 }
 
-/*when hovering over post, tell permalink to grow*/
+/*when hovering over post, tell dog-ear to grow*/
 .post:hover .dog-ear {
 	width: var(--de-width);
 	height: var(--de-width);
 }
 
-/*this is the part under the permalink that always covers up the part of the post wrapper that is transparent (ie cut off*/
+/*this is the part under the dog-ear that always covers up the part of the post that is transparent (ie cut off)*/
 .post .dog-ear:before {
 	content: "";
 	position: absolute;
 	z-index: -1;
 	background: linear-gradient(45deg, var(--post) 50%, transparent 50%);
-	width: calc(var(--de-width)*2);
-	height: calc(var(--de-width)*2);
-	top: calc(var(--de-width)*-1);
-	right: calc(var(--de-width)*-1);
+
 }
 
 /*when hovering over post, tell this part to shrink*/
 .post:hover .dog-ear:before {
 	width: var(--de-width);
 	height: var(--de-width);
-	top: 0px;
-	right: 0px;
 }
 
-/*when hovering over post, adjust this part so under-part doesn't peak over permalink dog-ear*/
-.post:hover .dog-ear:before {
-	top: 1px;
-	right: 1px;
-}
-
-/*make sure transitions for both are exactly the same so everything lines up*/
+/*make sure transitions for everything are exactly the same so everything lines up*/
 .post .dog-ear, 
 .post:hover .dog-ear, 
 .post .dog-ear:before, 
 .post:hover .dog-ear:before {
-	transition: transform var(--de-time) ease-in, width var(--de-time) ease-in, height var(--de-time) ease-in, top var(--de-time) ease-in, right var(--de-time) ease-in;
+  	transition: none var(--de-time) ease-in;
+}
+
+/*=============================================================================METHOD 1: HIDDEN OVERFLOW*/
+/*make sure moving parts don't leave the post itself*/
+.post.one {
+	overflow: hidden;
+}
+
+.post.one .dog-ear:before {
+	width: calc(var(--de-width)*2);
+	height: calc(var(--de-width)*2);
+	top: calc(var(--de-width)*-1);
+	right: calc(var(--de-width)*-1);
+}
+
+/*when hovering over post, adjust this part so :before doesn't peak over dog-ear*/
+.post.one:hover .dog-ear:before {
+	top: 1px;
+	right: 1px;
+}
+
+.post.one .dog-ear, 
+.post.one:hover .dog-ear, 
+.post.one .dog-ear:before, 
+.post.one:hover .dog-ear:before {
+	transition-property: 
+		width, 
+		height, 
+		top, 
+		right;
+}
+
+/*=============================================================================METHOD 2: BACKGROUND-CLIP*/
+.post.two .dog-ear:before {
+	width: var(--de-width);
+	height: var(--de-width);
+	top: calc(var(--de-width)*-1);
+	right: calc(var(--de-width)*-1);
+	padding-top: var(--de-width);
+	padding-right: var(--de-width);
+	background-clip: content-box;
+}
+
+.post.two:hover .dog-ear:before {
+  background: linear-gradient(45deg, var(--post) 50%, transparent 50%);
+	background-clip: content-box;
+	top: 0;
+	right: 0;
+	padding-top: 0;
+	padding-right: 0;
+}
+
+.post.two .dog-ear, 
+.post.two:hover .dog-ear, 
+.post.two .dog-ear:before, 
+.post.two:hover .dog-ear:before {
+	transition-property: 
+		width, 
+		height, 
+		top, 
+		right, 
+		padding;
+}
+
+/*=============================================================================METHOD 3: CLIP-PATH*/
+.post.three .dog-ear:before {
+	background: var(--post);
+	width: var(--de-width);
+	height: var(--de-width);
+	top: 0;
+	right: 0;
+	border-top-right-radius: 10px;
+	clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 0, 100% 0);
+}
+
+.post.three:hover .dog-ear:before {
+	clip-path: polygon(0 0, 0 100%, 100% 100%, 100% 100%, 0 0);
+}
+
+.post.three .dog-ear, 
+.post.three:hover .dog-ear, 
+.post.three .dog-ear:before, 
+.post.three:hover .dog-ear:before {
+	transition-property: 
+		width, 
+		height, 
+		clip-path;
 }
